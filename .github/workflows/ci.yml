@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The system under test, pinned so a change there cannot silently move
+      # this repo's numbers. Bump the ref deliberately and update baseline.json.
+      - uses: actions/checkout@v4
+        with:
+          repository: saianthireddy/rag-support-automation
+          ref: 467a68276661035883b4a8c37a206e6be87076fb
+          path: target
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install pytest ruff -e .
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Tests
+        env:
+          TARGET_REPO: target
+        run: pytest -q
+
+      - name: Judge calibration
+        run: python -m llmeval calibrate
+
+      - name: Eval with regression gate
+        run: python -m llmeval run --target-repo target --gate baseline.json --out runs/ci
+
+      - name: Upload report and traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-run
+          path: runs/ci
