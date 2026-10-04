@@ -1,0 +1,9 @@
+{
+  "hit_at_1": {"value": 0.91, "tolerance": 0.05, "direction": "higher"},
+  "recall_at_k": {"value": 0.95, "tolerance": 0.05, "direction": "higher"},
+  "mrr": {"value": 0.92, "tolerance": 0.05, "direction": "higher"},
+  "off_topic_refused": {"value": 0.62, "tolerance": 0.0, "direction": "higher"},
+  "answerable_refused": {"value": 0.0, "tolerance": 0.0, "direction": "lower"},
+  "faithfulness": {"value": 0.9, "tolerance": 0.05, "direction": "higher"},
+  "errors": {"value": 0, "tolerance": 0, "direction": "lower"}
+}
